@@ -8,8 +8,9 @@ from network.network_stack import NetworkStack
 app = core.App()
 
 # define the environment to be used
-ENV = 'dev'
-context = app.node.try_get_context('envs')[ENV]
+env = app.node.try_get_context('env')
+print(env)
+context = app.node.try_get_context('envs')[env]
 
 print(context)
 
