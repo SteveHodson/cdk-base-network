@@ -3,5 +3,23 @@
   "context": {
     "@aws-cdk/core:enableStackNameDuplicates": "true",
     "aws-cdk:enableDiffNoFail": "true"
-  }
+  },
+  "context": {
+    "envs": {
+      "dev": {
+        "account": "935649464685",
+	"region": "eu-west-2",
+	"vpc_config": {
+	  "cidr": "10.0.0.0/16"
+	}
+      },
+      "prod": {
+        "account": "935649464685",
+	"region": "eu-west-2",
+	"vpc_config": {
+	  "cidr": "10.2.0.0/16"
+	}
+      }
+    }
+  }  
 }
