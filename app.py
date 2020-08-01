@@ -8,10 +8,11 @@ from network.network_stack import NetworkStack
 app = core.App()
 
 # define the environment to be used
-env = app.node.try_get_context('env')
-print(env)
-context = app.node.try_get_context('envs')[env]
+ssm_key = app.node.try_get_context('ssm_key')
+print("#####")
+print(ssm_key)
 
+context = app.node.try_get_context('envs')[env]
 print(context)
 
 env = core.Environment(
