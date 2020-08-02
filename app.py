@@ -13,7 +13,6 @@ if env is None:
     env = "dev"
 
 context = app.node.try_get_context('envs')[env]
-print(context['account'])
 env = core.Environment(
     account=context['account'],
     region=context['region']
