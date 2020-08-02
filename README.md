@@ -21,6 +21,10 @@ Now the virtual environment is setup pull in all the dependencies
 ```
 $ pip install -r requirements.txt
 ```
+If this is the first time of using CDK...
+```
+$ cdk bootstrap
+```
 
 Look in the `./cdk.json` file and you will see some configuration for you to complete.  Do this now.
 
@@ -33,6 +37,11 @@ The optional element depends on what you have called your environment in `cdk.js
 To deploy use
 ```
 $ cdk deploy [env=prod]
+```
+
+To remove the network
+```
+$ cdk destroy
 ```
 
 ## Note on IP allocation
