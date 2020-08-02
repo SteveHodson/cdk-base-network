@@ -19,8 +19,15 @@
 #
 
 env ?= dev
-cwd = $(notdir $(shell pwd))
-key = "/cdk/${cwd}/${env}"
+cwd := $(notdir $(shell pwd))
+key := /cdk/${cwd}/${env}
+
+# parameters taken from cdk.json
+ssm := $(shell jq .context.envs.${env} cdk.json)
+ssm_account := $(shell jq -r .context.envs.${env}.account cdk.json)
+ssm_region := $(shell jq -r .context.envs.${env}.region cdk.json)
+ssm_cidr := $(shell jq -r .context.envs.${env}.vpc_config.cidr cdk.json)
+
 
 reader:
 	@echo "reading params for ${key}"
@@ -29,7 +36,10 @@ reader:
 
 uploader:
 	@echo "uploading params"
-	@echo ${key} 
+	@aws ssm put-parameter --overwrite --name "${key}" --type String --value "${ssm}"
+	#@aws ssm put-parameter --name "${key}/account" --type String --value "${ssm_account}"
+	#@aws ssm put-parameter --name "${key}/region" --type String --value "${ssm_region}"
+	#@aws ssm put-parameter --name "${key}/cidr" --type String --value "${ssm_cidr}"
 
 deploy: uploader
 	@cdk synth -c ssm_key=${key}

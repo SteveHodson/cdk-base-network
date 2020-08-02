@@ -7,27 +7,61 @@ from aws_cdk import (
 class NetworkStack(core.Stack):
 
     def __init__(self, scope: core.Construct, id: str, **kwargs) -> None:
+
+        # grab the context info before sending up to super class
+        self.context = kwargs['context']
+        kwargs={}
+
         super().__init__(scope, id, **kwargs)
 
-        vpc = ec2.Vpc(
+        # cidr block to use for this vpc
+        self.cidr=self.context['vpc_config']['cidr'],
+        print(self.context['vpc_config'])
+
+        # number of distinct layers within the network
+        # (default = 2)
+        layers = int(self.context['vpc_config'].get('layers', 2))
+        self.subnet_configurations = self._create_subnets(layers)
+        print("layers={}",layers)
+        # number of AZs to use (default = 2)
+        self.num_azs = int(self.context['vpc_config'].get('zones', 2))
+
+        self.vpc = ec2.Vpc(
             self, "VPC",
-            nat_gateways=1,
-            subnet_configuration=[
-                ec2.SubnetConfiguration(
-                    name="Public",
-                    subnet_type=ec2.SubnetType.PUBLIC,
-                    cidr_mask=20
-                ),
-                ec2.SubnetConfiguration(
-                    name="Private",
-                    subnet_type=ec2.SubnetType.PRIVATE,
-                    cidr_mask=19
-                ),
-                ec2.SubnetConfiguration(
-                    name="Persistence",
-                    subnet_type=ec2.SubnetType.ISOLATED,
-                    cidr_mask=21
-                )
-            ],
-            cidr='10.0.0.0/16'
+            max_azs=self.num_azs,
+            cidr=self.cidr,
+            subnet_configuration=self.subnet_configurations,
         )
+    
+    # A wrapper to create a list of subnet configurations
+    def _create_subnets(self, layers):
+        subnets = []
+        for layer in range(layers):
+            subnets.append(self._create_subnet(layer))
+        return subnets
+    
+    # Algorithm will create a SubnetConfiguration using the layers
+    # Each config will be half the size of the previous in the order;
+    # private, public, isolated, isolated...
+    def _create_subnet(self, layer):
+        print(self.cidr[-2:])
+        mask = self.cidr[-2:] + layer
+        if layer == 1:
+            sc = ec2.SubnetConfiguration(
+                name="Private",
+                subnet_type=ec2.SubnetType.PRIVATE,
+                cidr_mask=mask
+            )
+        if layer == 2:
+            sc = ec2.SubnetConfiguration(
+                name="Public",
+                subnet_type=ec2.SubnetType.PUBLIC,
+                cidr_mask=mask
+            )
+        if layer > 2:
+            sc = ec2.SubnetConfiguration(
+                name="Isolated",
+                subnet_type=ec2.SubnetType.ISOLATED,
+                cidr_mask=mask
+            )
+

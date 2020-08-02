@@ -7,19 +7,18 @@ from network.network_stack import NetworkStack
 
 app = core.App()
 
-# define the environment to be used
-ssm_key = app.node.try_get_context('ssm_key')
-print("#####")
-print(ssm_key)
+# define the environment to be used (default is dev)
+env = app.node.try_get_context('env')
+if env is None:
+    env = "dev"
 
 context = app.node.try_get_context('envs')[env]
-print(context)
-
+print(context['account'])
 env = core.Environment(
     account=context['account'],
     region=context['region']
 )
 
-NetworkStack(app, "network", env=env)
+NetworkStack(app, "network", env=env, context=context)
 
 app.synth()
