@@ -27,7 +27,20 @@ $ cdk bootstrap
 ```
 
 Look in the `./cdk.json` file and you will see some configuration for you to complete.  Do this now.
+```
+"envs": {
+  "prod": {                  <--- Name of your environment
+    "account": "YOUR AWS ACCOUNT NUMBER",
+    "region": "eu-west-1",   <--- Region you wish to work in
+    "vpc_config": {
+      "cidr": "10.0.0.0/16"  <--- cidr block for VPC
+      "zones": "3",          <--- AZ required and will determine # of NATs
+      "layers": "3"          <--- Number of network layers minumum of 2
+    }
+  }
+}
 
+```
 Next synthesize the template using
 ```
 $ cdk synth [env=prod]
