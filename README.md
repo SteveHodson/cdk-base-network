@@ -66,5 +66,5 @@ This is the thought behind the IP allocation shown in the AWS VPC template and s
 The net effect of this is to give appropriate sizes to subnets right from the start minimizing the necessity of resizing or worse tearing down.
 
 ## Future
-I think this could well be suitable as a high level contruct so that it is stored away in something repo (eg Code Artifact) and just an `app.py` and `cdk.json` would be needed for any networking requirements.  Sometimes there are requirements that this project will not cater for... the CDK will allow you to build a specialised network very quickly.
+I think this could well be suitable as a high level contruct so that it is stored away in a repo (eg Code Artifact) and an `app.py` and `cdk.json` would be all that is needed for any networking requirements.  Sometimes there are requirements that this project will not cater for... the CDK will allow you to build a specialised network very quickly.  See the 'issues' section of github to see further future alterations.  You can even suggest your own :)
    
